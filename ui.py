@@ -38,38 +38,48 @@ def update_player_display():
     for widget in spieler_anzeige.winfo_children():
         widget.destroy()
     for player in players:
-        tk.Button(spieler_anzeige, text=f'{player}').pack(side=tk.LEFT, padx=2)
+        tk.Button(spieler_anzeige, text=f'{player} | P:{0}',padx=50).pack(side=tk.LEFT, padx=2)
+
 
 
 def wueferln():
-    w_becher_u_pfad = 'assets/becher-u.png'
-    w_becher_u_bild = PhotoImage(file=w_becher_u_pfad)
-    w_becher_label.config(image=w_becher_u_bild)
-    w_becher_label.image = w_becher_u_bild
-    # Clear existing dice images
-    for widget in dice_frame.winfo_children():
-        widget.destroy()
+    global anzahl_wurf, counter
+    if counter < 3 :
+        w_becher_u_pfad = 'assets/becher-u.png'
+        w_becher_u_bild = PhotoImage(file=w_becher_u_pfad)
+        w_becher_label.config(image=w_becher_u_bild)
+        w_becher_label.image = w_becher_u_bild
+        # Clear existing dice images
+        for widget in dice_frame.winfo_children():
+            widget.destroy()
 
-    dice_images = []
-    for _ in range(3):
-        wuerfel_pfad = f'assets/{random.randint(1, 6)}.png'
-        wuerfel_bild = tk.PhotoImage(file=wuerfel_pfad)
-        dice_images.append(wuerfel_bild)
-        tk.Label(dice_frame, image=wuerfel_bild).pack(side=tk.LEFT, padx=5)
+        dice_images = []
 
-    dice_frame.dice_images = dice_images
+        for _ in range(3):
+            wuerfel_pfad = f'assets/{random.randint(1, 6)}.png'
+            wuerfel_bild = tk.PhotoImage(file=wuerfel_pfad)
+            dice_images.append(wuerfel_bild)
+            tk.Label(dice_frame, image=wuerfel_bild).pack(side=tk.LEFT, padx=5)
+        counter += 1
+        anzahl_wurf.set(f'Würfe: {counter}')
+
+
+        dice_frame.dice_images = dice_images
+    else:
+        counter = 0
 
 
 
 
 
 players = []
-
+counter = 0
 
 #GUI
 main = tk.Tk()
 main.title('Schocken')
-main.geometry('600x400')
+main.geometry('1280x720')
+main.resizable(False, False)
 
 #Navbar
 navbar = tk.Frame(main, bg='grey')
@@ -84,7 +94,7 @@ content = tk.Frame(main,bg='green')
 content.pack(side=tk.TOP,expand=True, fill=tk.BOTH)
 
 #Player Labels
-spieler_anzeige = tk.Frame(content)
+spieler_anzeige = tk.Frame(content, bg='gold', pady=2)
 spieler_anzeige.pack(side=tk.TOP,fill=tk.X)
 
 #Playground
@@ -98,6 +108,18 @@ w_becher_label.pack()
 w_becher_label.bind('<Button-1>',lambda event: wueferln())
 dice_frame = tk.Frame(playground, bg='green')
 dice_frame.pack()
+rauslegen = tk.Frame(playground, bg='brown', padx=30,pady=30,width=213, height=70)
+rauslegen.pack(pady=10)
+
+#Status
+status = tk.Frame(main, bg='green',padx=3,pady=3)
+status.pack(side=tk.TOP, fill=tk.X)
+
+
+#Wurfanzeige
+anzahl_wurf = tk.StringVar()
+wurfanzeige = tk.Label(status, textvariable=anzahl_wurf, fg='white', bg='green', font=('Arial', 13,'bold'))
+wurfanzeige.pack(side=tk.LEFT)
 
 
 main.mainloop()
